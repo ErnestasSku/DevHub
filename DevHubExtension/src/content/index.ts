@@ -4,14 +4,13 @@ import type {
   IBackgroundAction,
   IBackgroundActionResponse,
 } from "../background/backgroundAPI";
-import type PageInfo from "./contentAPI";
-import { SidboxPageInfo, getPageInfo } from "./contentAPI";
+import { SidboxPageInfo, getPageInfo, PageInfo } from "./contentAPI";
 
 // Some global styles on the page
 // import "./styles.css";
 
 // Some JS on the page
-storage.get().then(console.log);
+// storage.get().then(console.log);
 
 (async () => {
   const action: IBackgroundAction = { action: backgroundAction.getActiveTab };
@@ -31,14 +30,19 @@ function handleBackgroundResponse(response: IBackgroundActionResponse) {
 }
 
 function handleGetActiveTab(response: IBackgroundActionResponse) {
-  console.log(response);
   let page: PageInfo = getPageInfo(response.data);
 
   if (page instanceof SidboxPageInfo) {
     waitForElementToExist(".slds-page-header__title").then((el) => {
       if (el instanceof HTMLElement) {
         let childElement = el.innerHTML;
-        el.innerHTML = `<a href="${page.pageUrl}">${childElement}</a>`;
+        let linkElement = document.createElement("a");
+        linkElement.href = page.pageUrl;
+        linkElement.innerHTML = childElement;
+        linkElement.onclick = (el) => {
+          el.preventDefault();
+        };
+        el.appendChild(linkElement);
       }
     });
   } else {
