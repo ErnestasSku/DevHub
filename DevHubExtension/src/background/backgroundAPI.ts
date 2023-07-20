@@ -1,15 +1,15 @@
-
 enum backgroundAction {
-    getActiveTab = "getActiveTab",
+  getActiveTab = "getActiveTab",
+  historyStateUpdated = "historyStateUpdated",
 }
 
 interface IBackgroundAction {
-    action: backgroundAction;
+  action: backgroundAction;
 }
 
 interface IBackgroundActionResponse {
-    data: any;
-    action: backgroundAction;
+  data: any;
+  action: backgroundAction;
 }
 
 export { backgroundAction };
