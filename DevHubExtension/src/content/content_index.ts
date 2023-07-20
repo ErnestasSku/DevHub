@@ -58,8 +58,15 @@ function checkPage(url: string) {
         let linkElement = document.createElement("a");
         linkElement.href = page.pageUrl;
         linkElement.innerHTML = childElement;
-        linkElement.onclick = (el) => {
-          el.preventDefault();
+        linkElement.onclick = (elem) => {
+          elem.preventDefault();
+          const clipboardItem = new ClipboardItem({
+            "text/plain": new Blob([el.innerText], { type: "text/plain" }),
+            "text/html": new Blob([linkElement.outerHTML], {
+              type: "text/html",
+            }),
+          });
+          navigator.clipboard.write([clipboardItem]);
         };
         el.innerHTML = "";
         el.appendChild(linkElement);
