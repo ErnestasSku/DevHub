@@ -14,7 +14,7 @@ import { handleContentRequest } from "./contentActionHandler";
 chrome.runtime.onMessage.addListener(handleContentRequest);
 
 chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
-  if (details.tabId && details.url && details.url.startsWith(SIDBOX_URL)) {
+  if (details.tabId && details.url && details.url.includes(SIDBOX_URL)) {
     let response: IBackgroundActionResponse<HistoryStateUpdatedResponse> = {
       data: { url: details.url },
       action: backgroundAction.historyStateUpdated,

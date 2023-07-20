@@ -21,9 +21,12 @@ import { SIDBOX_TASK_TITLE_SELECTOR } from "src/utils/constants";
   handleBackgroundResponse(response);
 })();
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  checkPage(request.url);
-});
+chrome.runtime.onMessage.addListener(
+  (request: IBackgroundActionResponse<any>, sender, sendResponse) => {
+    console.log("received");
+    checkPage(request.data.url);
+  }
+);
 
 function handleBackgroundResponse(response: IBackgroundActionResponse<any>) {
   if (response.action === backgroundAction.getActiveTab) {
