@@ -1,11 +1,11 @@
+import { SIDBOX_URL } from "src/utils/constants";
 import { storage } from "../storage";
 import {
   backgroundAction,
+  type HistoryStateUpdatedResponse,
   type IBackgroundActionResponse,
 } from "./backgroundAPI";
 import { handleContentRequest } from "./contentActionHandler";
-
-// console.log("Hello from background script");
 
 // chrome.runtime.onInstalled.addListener(() => {
 //     storage.get().then(console.log);
@@ -14,14 +14,12 @@ import { handleContentRequest } from "./contentActionHandler";
 chrome.runtime.onMessage.addListener(handleContentRequest);
 
 chrome.webNavigation.onHistoryStateUpdated.addListener((details) => {
-  if (
-    details.tabId &&
-    details.url &&
-    details.url.startsWith("https://bcline.lightning.force.com/")
-  ) {
-    chrome.tabs.sendMessage(details.tabId, {
+  if (details.tabId && details.url && details.url.startsWith(SIDBOX_URL)) {
+    let response: IBackgroundActionResponse<HistoryStateUpdatedResponse> = {
+      data: { url: details.url },
       action: backgroundAction.historyStateUpdated,
-      url: details.url,
-    });
+    };
+
+    chrome.tabs.sendMessage(details.tabId, response);
   }
 });

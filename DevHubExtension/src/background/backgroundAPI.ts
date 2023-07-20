@@ -1,16 +1,17 @@
-enum backgroundAction {
+export enum backgroundAction {
   getActiveTab = "getActiveTab",
   historyStateUpdated = "historyStateUpdated",
 }
 
-interface IBackgroundAction {
+export interface IBackgroundAction {
   action: backgroundAction;
 }
 
-interface IBackgroundActionResponse {
-  data: any;
+export interface IBackgroundActionResponse<T> {
   action: backgroundAction;
+  data: T;
 }
 
-export { backgroundAction };
-export type { IBackgroundAction, IBackgroundActionResponse };
+export interface HistoryStateUpdatedResponse {
+  url: string;
+}

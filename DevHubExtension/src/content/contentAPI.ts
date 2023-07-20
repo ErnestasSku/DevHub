@@ -1,3 +1,5 @@
+import { SIDBOX_TASK_URL_PART, SIDBOX_URL } from "src/utils/constants";
+
 export enum PageType {
   Sidbox = "Sidbox",
   other = "other",
@@ -37,11 +39,8 @@ export class SidboxPageInfo extends PageInfo implements InfoSidboxPage {
 
 export function getPageInfo(data: any): PageInfo {
   const pageUrl = data;
-  console.log(`pageUrl: ${pageUrl}`);
-  if (pageUrl.includes("bcline.lightning.force.com")) {
-    let openedTask = pageUrl.includes(
-      "lightning.force.com/lightning/r/Task__c/"
-    );
+  if (pageUrl.includes(SIDBOX_URL)) {
+    let openedTask = pageUrl.includes(SIDBOX_TASK_URL_PART);
     return new SidboxPageInfo(PageType.Sidbox, pageUrl, openedTask);
   }
   return new PageInfo(PageType.other, pageUrl);
