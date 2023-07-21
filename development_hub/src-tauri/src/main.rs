@@ -42,11 +42,12 @@ async fn main() {
 
             Ok(())
         })
-        .run(|app_handle, event| match event {
+        .build(tauri::generate_context!())
+        .expect("error while running application")
+        .run(|_app_handle, event| match event {
             tauri::RunEvent::ExitRequested {api, ..} => api.prevent_exit(),
             _ => {}
-        })
-        .expect("error while running tauri application");
+        });
 }
 
 #[derive(Debug, Clone)]
