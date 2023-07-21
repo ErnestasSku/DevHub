@@ -1,0 +1,2 @@
+[workspace]
+members = ["test_websocket_server", "development_hub/src-tauri"]
