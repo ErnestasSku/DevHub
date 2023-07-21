@@ -35,14 +35,17 @@ async fn main() {
             tauri::async_runtime::spawn(async move {
                 loop {
                     if let Some(output) = async_proc_output_rx.recv().await {
-                        info!("Got request TO taui from axum: {:?}", output);
+                        info!("Got request TO tauri from axum: {:?}", output);
                     }
                 }
             });
 
             Ok(())
         })
-        .run(tauri::generate_context!())
+        .run(|app_handle, event| match event {
+            tauri::RunEvent::ExitRequested {api, ..} => api.prevent_exit(),
+            _ => {}
+        })
         .expect("error while running tauri application");
 }
 
