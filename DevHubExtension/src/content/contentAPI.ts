@@ -41,7 +41,24 @@ export function getPageInfo(data: any): PageInfo {
   const pageUrl = data;
   if (pageUrl.includes(SIDBOX_URL)) {
     let openedTask = pageUrl.includes(SIDBOX_TASK_URL_PART);
-    return new SidboxPageInfo(PageType.Sidbox, pageUrl, openedTask);
+
+    let info = new SidboxPageInfo(PageType.Sidbox, pageUrl, openedTask);
+    console.log(info);
+    return info;
   }
   return new PageInfo(PageType.other, pageUrl);
+}
+
+export function gatherInfoTest() {
+  let elements: NodeListOf<Element> = document.querySelectorAll(
+    ".test-id__field-label-container.slds-form-element__label"
+  );
+
+  let parents = Array.from(elements).map((el) => el.parentElement);
+  parents.forEach((el) => {
+    console.log(el);
+    // el.childNodes.forEach((child) => {
+    //   console.log(child);
+    // });
+  });
 }

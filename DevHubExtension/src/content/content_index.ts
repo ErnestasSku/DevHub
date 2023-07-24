@@ -6,7 +6,12 @@ import {
   type IBackgroundActionResponse,
 } from "../background/backgroundAPI";
 
-import { SidboxPageInfo, getPageInfo, PageInfo } from "./contentAPI";
+import {
+  SidboxPageInfo,
+  getPageInfo,
+  PageInfo,
+  gatherInfoTest,
+} from "./contentAPI";
 import { SIDBOX_TASK_TITLE_SELECTOR } from "src/utils/constants";
 
 // Some global styles on the page
@@ -52,28 +57,44 @@ function checkPage(url: string) {
   let page: PageInfo = getPageInfo(url);
 
   if (page instanceof SidboxPageInfo) {
-    waitForElementToExist(SIDBOX_TASK_TITLE_SELECTOR).then((el) => {
-      if (el instanceof HTMLElement) {
-        let childElement = el.innerHTML;
-        let linkElement = document.createElement("a");
-        linkElement.href = page.pageUrl;
-        linkElement.innerHTML = childElement;
-        linkElement.onclick = (elem) => {
-          elem.preventDefault();
-          const clipboardItem = new ClipboardItem({
-            "text/plain": new Blob([el.innerText], { type: "text/plain" }),
-            "text/html": new Blob([linkElement.outerHTML], {
-              type: "text/html",
-            }),
-          });
-          navigator.clipboard.write([clipboardItem]);
-        };
-        el.innerHTML = "";
-        el.appendChild(linkElement);
-      }
-    });
+    applyLinkBack(page);
+    observeInfo();
   } else {
   }
+}
+
+function applyLinkBack(page: PageInfo) {
+  waitForElementToExist(SIDBOX_TASK_TITLE_SELECTOR).then((el) => {
+    if (el instanceof HTMLElement) {
+      let childElement = el.innerHTML;
+      let linkElement = document.createElement("a");
+      linkElement.href = page.pageUrl;
+      linkElement.innerHTML = childElement;
+      linkElement.onclick = (elem) => {
+        elem.preventDefault();
+        const clipboardItem = new ClipboardItem({
+          "text/plain": new Blob([el.innerText], { type: "text/plain" }),
+          "text/html": new Blob([linkElement.outerHTML], {
+            type: "text/html",
+          }),
+        });
+        navigator.clipboard.write([clipboardItem]);
+      };
+      el.innerHTML = "";
+      el.appendChild(linkElement);
+    }
+  });
+}
+
+function observeInfo() {
+  waitForElementToExist(
+    ".test-id__field-label-container.slds-form-element__label"
+  ).then((el) => {
+    console.clear();
+    if (el instanceof HTMLElement) {
+      gatherInfoTest();
+    }
+  });
 }
 
 function waitForElementToExist(selector) {
