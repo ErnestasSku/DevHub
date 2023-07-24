@@ -28,3 +28,6 @@ target/
 # Added by cargo
 
 /target
+
+# TODO: figure out a better solution for this
+ql.bat
