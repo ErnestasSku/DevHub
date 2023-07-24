@@ -10,7 +10,7 @@ import {
   SidboxPageInfo,
   getPageInfo,
   PageInfo,
-  gatherInfoTest,
+  gatherTaskInfo,
 } from "./contentAPI";
 import { SIDBOX_TASK_TITLE_SELECTOR } from "src/utils/constants";
 
@@ -19,6 +19,8 @@ import { SIDBOX_TASK_TITLE_SELECTOR } from "src/utils/constants";
 
 // Some JS on the page
 // storage.get().then(console.log);
+
+let currentPage: PageInfo = null;
 
 (async () => {
   const action: IBackgroundAction = { action: backgroundAction.getActiveTab };
@@ -54,11 +56,13 @@ function handleHistoryStateUpdated(
 }
 
 function checkPage(url: string) {
-  let page: PageInfo = getPageInfo(url);
+  currentPage = getPageInfo(url);
 
-  if (page instanceof SidboxPageInfo) {
-    applyLinkBack(page);
-    observeInfo();
+  if (currentPage instanceof SidboxPageInfo) {
+    if (currentPage.openedTask) {
+      applyLinkBack(currentPage);
+      observeInfo();
+    }
   } else {
   }
 }
@@ -90,9 +94,8 @@ function observeInfo() {
   waitForElementToExist(
     ".test-id__field-label-container.slds-form-element__label"
   ).then((el) => {
-    console.clear();
     if (el instanceof HTMLElement) {
-      gatherInfoTest();
+      gatherTaskInfo();
     }
   });
 }
