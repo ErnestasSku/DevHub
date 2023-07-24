@@ -4,6 +4,9 @@ use axum::{extract::State, http::StatusCode, routing::post, Json, Router};
 use tokio::sync::mpsc;
 use tracing::info;
 
+use tower::ServiceBuilder;
+use tower_http::cors::CorsLayer;
+
 #[derive(Debug, Clone)]
 struct AxumState {
     output_tx: mpsc::Sender<String>,
@@ -14,9 +17,12 @@ pub async fn start_server(output_channel: mpsc::Sender<String>) {
         output_tx: output_channel,
     };
 
+    let cors = CorsLayer::very_permissive();
+
     let app = Router::new()
         .route("/Task", post(task_post))
-        .with_state(state);
+        .with_state(state)
+        .layer(ServiceBuilder::new().layer(cors));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3030));
 
