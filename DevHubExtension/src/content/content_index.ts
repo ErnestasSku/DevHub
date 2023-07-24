@@ -21,6 +21,7 @@ import { SIDBOX_TASK_TITLE_SELECTOR } from "src/utils/constants";
 // storage.get().then(console.log);
 
 let currentPage: PageInfo = null;
+let infoGatherTimer = null;
 
 (async () => {
   const action: IBackgroundAction = { action: backgroundAction.getActiveTab };
@@ -95,7 +96,7 @@ function observeInfo() {
     ".test-id__field-label-container.slds-form-element__label"
   ).then((el) => {
     if (el instanceof HTMLElement) {
-      gatherTaskInfo();
+      infoGatherTimer = debounce(sendInfoToTauri());
     }
   });
 }
@@ -118,4 +119,30 @@ function waitForElementToExist(selector) {
       childList: true,
     });
   });
+}
+
+function sendInfoToTauri() {
+  let info = gatherTaskInfo();
+  console.log(info[0]);
+  let body = JSON.stringify({ a: info[0].content, b: info[1].name });
+
+  fetch("http://127.0.0.1:3030/Task", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: body,
+  })
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
+}
+
+function debounce(func, delay = 250) {
+  let timerId;
+  return (...args) => {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
 }
