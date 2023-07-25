@@ -1,4 +1,4 @@
-import { storage } from "../storage";
+import { features, storage } from "../storage";
 import {
   backgroundAction,
   type HistoryStateUpdatedResponse,
@@ -31,7 +31,6 @@ let infoGatherTimer = null;
 
 chrome.runtime.onMessage.addListener(
   (request: IBackgroundActionResponse<any>, sender, sendResponse) => {
-    console.log("received");
     checkPage(request.data.url);
   }
 );
@@ -61,8 +60,14 @@ function checkPage(url: string) {
 
   if (currentPage instanceof SidboxPageInfo) {
     if (currentPage.openedTask) {
-      applyLinkBack(currentPage);
-      observeInfo();
+      features.get().then((x) => {
+        if (x.task_link) {
+          applyLinkBack(currentPage);
+        }
+        if (x.experimental) {
+          observeInfo();
+        }
+      });
     }
   } else {
   }
