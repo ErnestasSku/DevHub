@@ -39,5 +39,5 @@
     "clipboardWrite",
     "clipboardWrite"
   ],
-  "host_permissions": ["127.0.0.1", "127.0.0.1:3030"]
+  "host_permissions": ["http://127.0.0.1", "http://127.0.0.1:3030"]
 }
