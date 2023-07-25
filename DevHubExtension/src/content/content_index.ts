@@ -137,9 +137,7 @@ function sendInfoToTauri() {
       "Content-Type": "application/json",
     },
     body: body,
-  })
-    .then((res) => console.log(res))
-    .catch((err) => console.log(err));
+  });
 }
 
 function debounce(func, delay = 250) {

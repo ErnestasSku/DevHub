@@ -52,7 +52,6 @@ export function getPageInfo(data: any): PageInfo {
     let openedTask = pageUrl.includes(SIDBOX_TASK_URL_PART);
 
     let info = new SidboxPageInfo(PageType.Sidbox, pageUrl, openedTask);
-    console.log(info);
     return info;
   }
   return new PageInfo(PageType.other, pageUrl);

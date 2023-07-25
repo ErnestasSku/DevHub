@@ -13,7 +13,7 @@ function handleContentRequest(
     case backgroundAction.getActiveTab:
       return handleGetActiveTab(sendResponse, request.action);
     default:
-      console.log("Unknown action");
+      console.info("Custom Extension: Unknown command");
       break;
   }
 }

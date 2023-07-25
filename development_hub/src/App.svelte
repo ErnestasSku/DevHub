@@ -3,8 +3,6 @@
   let text: string = "Hello World!";
 
   listen("update", (event) => {
-    console.log(event);
-    console.log(event.payload);
     text = event.payload as string;
   });
 </script>
