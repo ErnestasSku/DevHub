@@ -29,5 +29,8 @@ target/
 
 /target
 
+dist.crx
+dist.pem
+
 # TODO: figure out a better solution for this
 ql.bat
