@@ -7,12 +7,14 @@ use tracing::info;
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 
+use super::server_types::{ServerType, TaskInfo};
+
 #[derive(Debug, Clone)]
 struct AxumState {
-    output_tx: mpsc::Sender<String>,
+    output_tx: mpsc::Sender<ServerType>,
 }
 
-pub async fn start_server(output_channel: mpsc::Sender<String>) {
+pub async fn start_server(output_channel: mpsc::Sender<ServerType>) {
     let state = AxumState {
         output_tx: output_channel,
     };
@@ -32,17 +34,17 @@ pub async fn start_server(output_channel: mpsc::Sender<String>) {
         .unwrap();
 }
 
-#[derive(Debug, serde::Deserialize)]
-pub struct Test {
-    pub a: String,
-    pub b: Option<String>,
-}
-
 async fn task_post(
     State(state): State<AxumState>,
-    Json(payload): Json<Test>,
+    Json(payload): Json<TaskInfo>,
 ) -> (StatusCode, &'static str) {
     info!("Got a request");
-    state.output_tx.send(payload.a).await.unwrap();
+    dbg!(payload.clone());
+
+    state
+        .output_tx
+        .send(ServerType::Task(payload))
+        .await
+        .unwrap();
     (StatusCode::OK, "OK")
 }

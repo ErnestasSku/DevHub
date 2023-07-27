@@ -5,6 +5,8 @@ use tauri::Manager;
 use tokio::sync::mpsc;
 use tracing::info;
 
+use crate::processes::server_types::ServerType;
+
 mod processes;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -19,7 +21,7 @@ async fn main() {
     info!("Starting application");
     tauri::async_runtime::set(tokio::runtime::Handle::current());
 
-    let (tx, mut rx) = mpsc::channel::<String>(1);
+    let (tx, mut rx) = mpsc::channel::<ServerType>(1);
 
     tokio::spawn(async move {
         info!("Starting axum server");
