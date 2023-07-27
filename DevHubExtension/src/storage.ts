@@ -17,7 +17,7 @@ const defaultFeatures: IFeatures = {
   task_link: true,
   tauri_integration: false,
   requests: false,
-  experimental: false,
+  experimental: true,
 };
 
 export const features = {
