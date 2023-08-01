@@ -1,4 +1,5 @@
 export const SIDBOX_URL = "bcline.lightning.force.com";
+export const BITBUCKET_URL = "https://bitbucket.org/";
 
 export const SIDBOX_TASK_URL_PART = "/lightning/r/Task__c/";
 

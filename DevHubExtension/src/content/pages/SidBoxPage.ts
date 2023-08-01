@@ -1,5 +1,9 @@
 import { findElementByAttributeRecursively } from "src/utils/domUtils";
-import { PageInfo, type InfoSidboxPage, type PageType } from "./PageType";
+import { PageInfo, type PageType } from "./PageType";
+
+export interface InfoSidboxPage {
+  openedTask: boolean;
+}
 
 export interface SFField {
   name: string;
@@ -19,19 +23,6 @@ export const FIELDS = [
   "Expected_Result__c",
   "Developer_Notes2__c",
 ];
-
-export class SidboxPageInfo extends PageInfo implements InfoSidboxPage {
-  openedTask: boolean;
-
-  constructor(
-    pageType: PageType,
-    pageUrl: string,
-    openedTask: boolean = false
-  ) {
-    super(pageType, pageUrl);
-    this.openedTask = openedTask;
-  }
-}
 
 export function gatherTaskInfo(): SFField[] {
   let elements: NodeListOf<Element> = document.querySelectorAll(
