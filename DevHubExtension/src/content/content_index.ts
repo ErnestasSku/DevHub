@@ -94,6 +94,21 @@ function applyLinkBack(page: PageInfo) {
         });
         navigator.clipboard.write([clipboardItem]);
       };
+      linkElement.ondblclick = (elem) => {
+        let bolded = document.createElement("b");
+        bolded.innerHTML = linkElement.outerHTML;
+        elem.preventDefault();
+        const clipboardItem = new ClipboardItem({
+          "text/plain": new Blob([el.innerText], { type: "text/plain" }),
+          "text/html": new Blob([bolded.outerHTML], {
+            type: "text/html",
+          }),
+        });
+
+        setTimeout(() => {
+          navigator.clipboard.write([clipboardItem]);
+        }, 100);
+      };
       el.innerHTML = "";
       el.appendChild(linkElement);
     }
