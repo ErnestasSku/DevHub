@@ -6,12 +6,18 @@ import {
   type IBackgroundActionResponse,
 } from "../background/backgroundAPI";
 
-import { SidboxPageInfo, getPageInfo, PageInfo } from "./pages/PageType";
+import {
+  SidboxPageInfo,
+  getPageInfo,
+  PageInfo,
+  BitbucketPage,
+} from "./pages/PageType";
 import {
   LOCAL_SERVER_URL,
   SIDBOX_TASK_TITLE_SELECTOR,
 } from "src/utils/constants";
 import { gatherTaskInfo, type TaskInfo } from "./pages/SidBoxPage";
+import { updateDiffs } from "./pages/BitbucketPage";
 
 // Some global styles on the page
 // import "./styles.css";
@@ -68,6 +74,8 @@ function checkPage(url: string) {
         }
       });
     }
+  } else if (currentPage instanceof BitbucketPage) {
+    updateDiffs();
   } else {
   }
 }
@@ -120,7 +128,7 @@ function observeInfo() {
   });
 }
 
-function waitForElementToExist(selector) {
+export function waitForElementToExist(selector) {
   return new Promise((resolve) => {
     if (document.querySelector(selector)) {
       return resolve(document.querySelector(selector));
