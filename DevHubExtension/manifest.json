@@ -12,11 +12,11 @@
   "content_scripts": [
     {
       "matches": ["https://*/*"],
-      "js": ["src/content/content_index.ts"]
+      "js": ["src/content/contentIndex.ts"]
     }
   ],
   "background": {
-    "service_worker": "src/background/background_index.ts"
+    "service_worker": "src/background/backgroundIndex.ts"
   },
   "options_ui": {
     "page": "src/options/options.html",
@@ -38,6 +38,5 @@
     "webNavigation",
     "clipboardWrite",
     "clipboardWrite"
-  ],
-  "host_permissions": ["http://127.0.0.1", "http://127.0.0.1:3030"]
+  ]
 }
