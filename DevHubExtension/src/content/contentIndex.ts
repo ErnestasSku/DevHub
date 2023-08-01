@@ -6,17 +6,12 @@ import {
   type IBackgroundActionResponse,
 } from "../background/backgroundAPI";
 
-import {
-  SidboxPageInfo,
-  getPageInfo,
-  PageInfo,
-  gatherTaskInfo,
-  type TaskInfo,
-} from "./contentAPI";
+import { SidboxPageInfo, getPageInfo, PageInfo } from "./pages/PageType";
 import {
   LOCAL_SERVER_URL,
   SIDBOX_TASK_TITLE_SELECTOR,
 } from "src/utils/constants";
+import { gatherTaskInfo, type TaskInfo } from "./pages/SidBoxPage";
 
 // Some global styles on the page
 // import "./styles.css";
