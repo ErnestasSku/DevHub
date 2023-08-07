@@ -1,8 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+
+use axum::Server;
 use tauri::Manager;
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, mpsc::{Receiver, Sender}};
 use tracing::info;
 
 use crate::processes::server_types::ServerType;
@@ -21,35 +23,43 @@ async fn main() {
     info!("Starting application");
     tauri::async_runtime::set(tokio::runtime::Handle::current());
 
-    let (tx, mut rx) = mpsc::channel::<ServerType>(1);
+    let (tx, rx) = mpsc::channel::<ServerType>(1);
 
+    server_init(tx.clone()).await;
+    tauri_app_init(rx).await;
+    
+}
+
+async fn tauri_app_init(mut rx: Receiver<ServerType>) {
+    tauri::Builder::default()
+    .invoke_handler(tauri::generate_handler![greet])
+    .setup(|app| {
+        let app_handle = app.handle();
+
+        tauri::async_runtime::spawn(async move {
+            loop {
+                if let Some(output) = rx.recv().await {
+                    info!("Got request to tauri from axum: {:?}", output);
+                    app_handle.emit_all("update", output).unwrap();
+                }
+            }
+        });
+
+        Ok(())
+    })
+    .build(tauri::generate_context!())
+    .expect("error while running application")
+    .run(|_app_handle, event| match event {
+        tauri::RunEvent::ExitRequested { api, .. } => api.prevent_exit(),
+        _ => {}
+    });
+}
+
+async fn server_init(tx: Sender<ServerType>) {
     tokio::spawn(async move {
         info!("Starting axum server");
-        processes::server::start_server(tx.clone()).await;
+        processes::server::start_server(tx).await;
     });
-
-    tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
-        .setup(|app| {
-            let app_handle = app.handle();
-
-            tauri::async_runtime::spawn(async move {
-                loop {
-                    if let Some(output) = rx.recv().await {
-                        info!("Got request to tauri from axum: {:?}", output);
-                        app_handle.emit_all("update", output).unwrap();
-                    }
-                }
-            });
-
-            Ok(())
-        })
-        .build(tauri::generate_context!())
-        .expect("error while running application")
-        .run(|_app_handle, event| match event {
-            tauri::RunEvent::ExitRequested { api, .. } => api.prevent_exit(),
-            _ => {}
-        });
 }
 
 #[derive(Debug, serde::Deserialize)]
