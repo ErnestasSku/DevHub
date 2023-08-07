@@ -62,11 +62,10 @@ async fn server_init(tx: Sender<ServerType>) {
     });
 }
 
-#[derive(Debug, serde::Deserialize)]
-struct TestData {
-    name: String,
-}
 
+
+
+// TODO:
 async fn _async_process_model(
     mut input_rx: mpsc::Receiver<String>,
     output_tx: mpsc::Sender<String>,
