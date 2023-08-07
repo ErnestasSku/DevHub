@@ -10,6 +10,7 @@ use tracing::info;
 use crate::processes::server_types::ServerType;
 
 mod processes;
+mod utils;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
