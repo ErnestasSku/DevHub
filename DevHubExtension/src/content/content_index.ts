@@ -11,8 +11,12 @@ import {
   getPageInfo,
   PageInfo,
   gatherTaskInfo,
+  type TaskInfo,
 } from "./contentAPI";
-import { SIDBOX_TASK_TITLE_SELECTOR } from "src/utils/constants";
+import {
+  LOCAL_SERVER_URL,
+  SIDBOX_TASK_TITLE_SELECTOR,
+} from "src/utils/constants";
 
 // Some global styles on the page
 // import "./styles.css";
@@ -90,6 +94,21 @@ function applyLinkBack(page: PageInfo) {
         });
         navigator.clipboard.write([clipboardItem]);
       };
+      linkElement.ondblclick = (elem) => {
+        let bolded = document.createElement("b");
+        bolded.innerHTML = linkElement.outerHTML;
+        elem.preventDefault();
+        const clipboardItem = new ClipboardItem({
+          "text/plain": new Blob([el.innerText], { type: "text/plain" }),
+          "text/html": new Blob([bolded.outerHTML], {
+            type: "text/html",
+          }),
+        });
+
+        setTimeout(() => {
+          navigator.clipboard.write([clipboardItem]);
+        }, 100);
+      };
       el.innerHTML = "";
       el.appendChild(linkElement);
     }
@@ -129,15 +148,21 @@ function waitForElementToExist(selector) {
 function sendInfoToTauri() {
   let info = gatherTaskInfo();
   console.log(info[0]);
-  let body = JSON.stringify({ a: info[0].content, b: info[1].name });
 
-  fetch("http://127.0.0.1:3030/Task", {
+  let body: TaskInfo = {
+    url: currentPage.pageUrl,
+    fields: info,
+  };
+
+  fetch(LOCAL_SERVER_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: body,
-  });
+    body: JSON.stringify(body),
+  })
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
 }
 
 function debounce(func, delay = 250) {

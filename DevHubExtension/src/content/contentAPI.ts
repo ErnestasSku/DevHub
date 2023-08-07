@@ -23,6 +23,11 @@ interface SFField {
   content: string;
 }
 
+export interface TaskInfo {
+  url: string;
+  fields: SFField[];
+}
+
 export class PageInfo implements IPageInfo {
   pageType: PageType;
   pageUrl: string;
@@ -114,6 +119,14 @@ function extractInformationFromSFField(
   );
 
   if (foundElement != null) {
+    if (field == "Details__c") {
+      console.log(foundElement.innerHTML);
+      return {
+        name: field,
+        content: foundElement.innerHTML,
+      };
+    }
+
     return {
       name: field,
       content: foundElement.textContent,
